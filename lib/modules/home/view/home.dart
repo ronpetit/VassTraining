@@ -1,6 +1,5 @@
 import 'package:capacitacion_vass/modules/home/controller/home_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/material/scaffold.dart';
 
 class MyNewApp extends StatefulWidget {
   final HomeController _controller = HomeController();
@@ -17,6 +16,7 @@ class MyNewAppState extends State<MyNewApp> implements View {
   TextEditingController _passwordController = TextEditingController();
   bool _tamanoGrande = false;
   bool _checked = false;
+  bool _loading = false;
 
   @override
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -39,6 +39,7 @@ class MyNewAppState extends State<MyNewApp> implements View {
     _height = MediaQuery.of(context).size.height;
     _tamanoGrande = true;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           "LOGIN",
@@ -72,13 +73,9 @@ class MyNewAppState extends State<MyNewApp> implements View {
                           TextFormField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
-                              style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: _tamanoGrande ? 18 : 14),
-                              decoration: InputDecoration(
-                                  labelText: "Email",
-                                  hintText: "example@example.com"),
-                              validator: (value){
+                              style: TextStyle(color: Colors.grey[700], fontSize: _tamanoGrande ? 18 : 14),
+                              decoration: InputDecoration(labelText: "Email", hintText: "example@example.com"),
+                              validator: (value) {
                                 if (value.isEmpty) {
                                   return 'Email is required';
                                 }
@@ -91,15 +88,12 @@ class MyNewAppState extends State<MyNewApp> implements View {
                               controller: _passwordController,
                               obscureText: true,
                               keyboardType: TextInputType.visiblePassword,
-                              style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: _tamanoGrande ? 18 : 14),
-                              decoration:
-                                  InputDecoration(labelText: "Password"),
+                              style: TextStyle(color: Colors.grey[700], fontSize: _tamanoGrande ? 18 : 14),
+                              decoration: InputDecoration(labelText: "Password"),
                               validator: (value) {
                                 if (value.isEmpty) {
                                   return 'Password is required';
-                                } else{
+                                } else {
                                   return null;
                                 }
                               }),
@@ -122,17 +116,26 @@ class MyNewAppState extends State<MyNewApp> implements View {
                           ),
                           ElevatedButton(
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.deepPurple),
+                              backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
                             ),
-                            onPressed: () {
-                              if (formKey.currentState.validate()) {
-                                Scaffold.of(context).showSnackBar(
-                                    SnackBar(content: Text('Processing Data')));
-                              }
-                            },
-                            child:
-                                Text('Login', style: TextStyle(fontSize: 20)),
+                            onPressed: !_loading
+                                ? () {
+                                    if (formKey.currentState.validate()) {
+                                      Scaffold.of(localContext).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Processing Data'),
+                                        ),
+                                      );
+                                      widget._controller.futuresTest();
+                                    }
+                                  }
+                                : null,
+                            child: !_loading
+                                ? Text(
+                                    'Login',
+                                    style: TextStyle(fontSize: 20),
+                                  )
+                                : CircularProgressIndicator(),
                           ),
                         ],
                       ),
@@ -145,5 +148,19 @@ class MyNewAppState extends State<MyNewApp> implements View {
         },
       ),
     );
+  }
+
+  @override
+  void setLoading() {
+    setState(() {
+      _loading =  true;
+    });
+  }
+
+  @override
+  void hideLoading() {
+    setState(() {
+      _loading = false;
+    });
   }
 }
