@@ -126,7 +126,7 @@ class MyNewAppState extends State<MyNewApp> implements View {
                                           content: Text('Processing Data'),
                                         ),
                                       );
-                                      widget._controller.futuresTest();
+                                      widget._controller.futuresTest(localContext);
                                     }
                                   }
                                 : null,

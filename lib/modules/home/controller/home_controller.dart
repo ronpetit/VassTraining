@@ -1,7 +1,9 @@
 import 'package:capacitacion_vass/models/json_placeholder.dart';
 import 'package:capacitacion_vass/networking/api_client.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:capacitacion_vass/modules/main/view/main_view.dart';
 
 class HomeController {
   View view;
@@ -17,7 +19,7 @@ class HomeController {
     this.view = null;
   }
 
-  void futuresTest() async {
+  void futuresTest(BuildContext context) async {
     view.setLoading();
     JsonPlaceholder placeholder = await _client.getPlaceholder();
     await Future.delayed(Duration(seconds: 2), null);
@@ -25,12 +27,19 @@ class HomeController {
     print(placeholder.title);
     print(placeholder.userID);
     print(placeholder.completed);
+    Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (BuildContext localContext) {
+        return MainView();
+      }),
+    );
   }
-
 }
 
 abstract class View {
   GlobalKey<FormState> formKey;
+
   void setLoading();
+
   void hideLoading();
 }
