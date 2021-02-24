@@ -16,6 +16,7 @@ class MyNewAppState extends State<MyNewApp> implements View {
   TextEditingController _passController = TextEditingController();
   bool _tamanoGrande = false;
   bool _value = false;
+  bool _loading = false;
 
   @override
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -46,13 +47,13 @@ class MyNewAppState extends State<MyNewApp> implements View {
         centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.deepPurple, Colors.purple],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight)),
+            gradient: LinearGradient(
+                colors: [Colors.deepPurple, Colors.purple], begin: Alignment.centerLeft, end: Alignment.centerRight),
+          ),
         ),
         elevation: 0,
       ),
+      resizeToAvoidBottomPadding: false,
       body: Builder(
         builder: (BuildContext localContext) {
           return Container(
@@ -60,17 +61,15 @@ class MyNewAppState extends State<MyNewApp> implements View {
             height: _height,
             padding: EdgeInsets.symmetric(horizontal: _width * 0.1),
             decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Colors.deepPurple, Colors.purple],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight)),
+              gradient: LinearGradient(
+                  colors: [Colors.deepPurple, Colors.purple], begin: Alignment.centerLeft, end: Alignment.centerRight),
+            ),
             child: Align(
               alignment: Alignment.topCenter,
               child: SizedBox(
                 width: _width,
                 child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                   child: Padding(
                     padding: EdgeInsets.all(_width * 0.05),
                     child: Form(
@@ -81,9 +80,7 @@ class MyNewAppState extends State<MyNewApp> implements View {
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
-                            style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: _tamanoGrande ? 20 : 14),
+                            style: TextStyle(color: Colors.grey[700], fontSize: _tamanoGrande ? 20 : 14),
                             decoration: InputDecoration(
                                 labelText: "Email",
                                 hintText: 'example@email.com',
@@ -99,12 +96,11 @@ class MyNewAppState extends State<MyNewApp> implements View {
                           TextFormField(
                             controller: _passController,
                             obscureText: true,
-                            style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: _tamanoGrande ? 20 : 14),
+                            style: TextStyle(color: Colors.grey[700], fontSize: _tamanoGrande ? 20 : 14),
                             decoration: InputDecoration(
-                                labelText: "Password",
-                                prefixIcon: Icon(Icons.lock_outlined)),
+                              labelText: "Password",
+                              prefixIcon: Icon(Icons.lock_outlined),
+                            ),
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Required field!';
@@ -127,41 +123,40 @@ class MyNewAppState extends State<MyNewApp> implements View {
                           ),
                           Spacer(),
                           Container(
-                              height: 50,
-                              alignment: FractionalOffset.bottomCenter,
-                              child: RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(60)),
-                                onPressed: () {
-                                  if (formKey.currentState.validate()) {
-                                    Scaffold.of(context).showSnackBar(SnackBar(
-                                        content: Text('Processing data')));
-                                  }
-                                },
-                                child: Ink(
-                                    decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                            colors: [
-                                              Colors.deepPurple,
-                                              Colors.purple
-                                            ],
-                                            begin: Alignment.centerLeft,
-                                            end: Alignment.centerRight),
-                                        borderRadius:
-                                            BorderRadius.circular(30.0)),
-                                    child: Container(
-                                        constraints:
-                                            BoxConstraints(minHeight: 50),
-                                        alignment: Alignment.center,
-                                        child: Text(
+                            height: 50,
+                            alignment: FractionalOffset.bottomCenter,
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(60)),
+                              onPressed: !_loading
+                                  ? () {
+                                      widget._controller.loginVerification(localContext);
+                                    }
+                                  : null,
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [Colors.deepPurple, Colors.purple],
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight),
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                child: Container(
+                                  constraints: BoxConstraints(minHeight: 50),
+                                  alignment: Alignment.center,
+                                  child: !_loading
+                                      ? Text(
                                           'Login',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.white),
-                                        ))),
-                                padding: EdgeInsets.all(0.0),
-                              )),
+                                          style: TextStyle(fontSize: 20, color: Colors.white),
+                                        )
+                                      : CircularProgressIndicator(
+                                          valueColor: AlwaysStoppedAnimation(Colors.white),
+                                        ),
+                                ),
+                              ),
+                              padding: EdgeInsets.all(0.0),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -173,5 +168,19 @@ class MyNewAppState extends State<MyNewApp> implements View {
         },
       ),
     );
+  }
+
+  @override
+  void hideLoading() {
+    setState(() {
+      _loading = false;
+    });
+  }
+
+  @override
+  void setLoading() {
+    setState(() {
+      _loading = true;
+    });
   }
 }
