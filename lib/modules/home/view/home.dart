@@ -46,7 +46,13 @@ class MyNewAppState extends State<MyNewApp> implements View {
           style: TextStyle(color: Colors.white, fontSize: 24),
         ),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Colors.deepPurple, Colors.purple],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight)),
+        ),
         elevation: 0,
       ),
       body: Builder(
@@ -55,12 +61,17 @@ class MyNewAppState extends State<MyNewApp> implements View {
             width: _width,
             height: _height,
             padding: EdgeInsets.symmetric(horizontal: _width * 0.05),
-            color: Colors.deepPurple,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Colors.deepPurple, Colors.purple],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight)),
             child: Align(
               alignment: Alignment.topCenter,
               child: SizedBox(
                 width: _width,
                 child: Card(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                   child: Padding(
                     padding: EdgeInsets.all(_width * 0.04),
                     child: Form(
@@ -73,8 +84,13 @@ class MyNewAppState extends State<MyNewApp> implements View {
                           TextFormField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
-                              style: TextStyle(color: Colors.grey[700], fontSize: _tamanoGrande ? 18 : 14),
-                              decoration: InputDecoration(labelText: "Email", hintText: "example@example.com"),
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: _tamanoGrande ? 18 : 14),
+                              decoration: InputDecoration(
+                                  labelText: "Email",
+                                  hintText: "example@example.com",
+                                  prefixIcon: Icon(Icons.email_outlined)),
                               validator: (value) {
                                 if (value != null) {
                                   if (value.isEmpty) {
@@ -90,8 +106,12 @@ class MyNewAppState extends State<MyNewApp> implements View {
                               controller: _passwordController,
                               obscureText: true,
                               keyboardType: TextInputType.visiblePassword,
-                              style: TextStyle(color: Colors.grey[700], fontSize: _tamanoGrande ? 18 : 14),
-                              decoration: InputDecoration(labelText: "Password"),
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: _tamanoGrande ? 18 : 14),
+                              decoration: InputDecoration(
+                                  labelText: "Password",
+                                  prefixIcon: Icon(Icons.lock_outlined)),
                               validator: (value) {
                                 if (value != null) {
                                   if (value.isEmpty) {
@@ -105,7 +125,7 @@ class MyNewAppState extends State<MyNewApp> implements View {
                           ),
                           CheckboxListTile(
                             title: Text("Remember me"),
-                            controlAffinity: ListTileControlAffinity.platform,
+                            controlAffinity: ListTileControlAffinity.leading,
                             value: _checked,
                             onChanged: (bool? value) {
                               setState(() {
@@ -158,7 +178,7 @@ class MyNewAppState extends State<MyNewApp> implements View {
   @override
   void setLoading() {
     setState(() {
-      _loading =  true;
+      _loading = true;
     });
   }
 
