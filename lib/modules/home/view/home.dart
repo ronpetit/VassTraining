@@ -11,11 +11,11 @@ class MyNewApp extends StatefulWidget {
 }
 
 class MyNewAppState extends State<MyNewApp> implements View {
-  double _width, _height;
+  late double _width, _height;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   bool _tamanoGrande = false;
-  bool _checked = false;
+  bool? _checked = false;
   bool _loading = false;
 
   @override
@@ -76,8 +76,10 @@ class MyNewAppState extends State<MyNewApp> implements View {
                               style: TextStyle(color: Colors.grey[700], fontSize: _tamanoGrande ? 18 : 14),
                               decoration: InputDecoration(labelText: "Email", hintText: "example@example.com"),
                               validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Email is required';
+                                if (value != null) {
+                                  if (value.isEmpty) {
+                                    return 'Email is required';
+                                  }
                                 }
                                 return null;
                               }),
@@ -91,11 +93,12 @@ class MyNewAppState extends State<MyNewApp> implements View {
                               style: TextStyle(color: Colors.grey[700], fontSize: _tamanoGrande ? 18 : 14),
                               decoration: InputDecoration(labelText: "Password"),
                               validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Password is required';
-                                } else {
-                                  return null;
+                                if (value != null) {
+                                  if (value.isEmpty) {
+                                    return 'Password is required';
+                                  }
                                 }
+                                return null;
                               }),
                           SizedBox(
                             height: 20,
@@ -104,7 +107,7 @@ class MyNewAppState extends State<MyNewApp> implements View {
                             title: Text("Remember me"),
                             controlAffinity: ListTileControlAffinity.platform,
                             value: _checked,
-                            onChanged: (bool value) {
+                            onChanged: (bool? value) {
                               setState(() {
                                 _checked = value;
                               });
@@ -120,13 +123,15 @@ class MyNewAppState extends State<MyNewApp> implements View {
                             ),
                             onPressed: !_loading
                                 ? () {
-                                    if (formKey.currentState.validate()) {
-                                      Scaffold.of(localContext).showSnackBar(
-                                        SnackBar(
-                                          content: Text('Processing Data'),
-                                        ),
-                                      );
-                                      widget._controller.futuresTest(localContext);
+                                    if (formKey.currentState != null) {
+                                      if (formKey.currentState!.validate()) {
+                                        Scaffold.of(localContext).showSnackBar(
+                                          SnackBar(
+                                            content: Text('Processing Data'),
+                                          ),
+                                        );
+                                        widget._controller.futuresTest(localContext);
+                                      }
                                     }
                                   }
                                 : null,

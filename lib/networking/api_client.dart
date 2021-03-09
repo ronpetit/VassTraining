@@ -7,11 +7,13 @@ class APIClient {
   static const baseUrl = "https://jsonplaceholder.typicode.com";
   final http.Client httpClient;
 
-  APIClient({@required this.httpClient}) : assert(httpClient != null);
+  APIClient({required this.httpClient});
 
   Future<JsonPlaceholder> getPlaceholder() async {
     final url = "$baseUrl/todos/1";
-    final response = await this.httpClient.get(url);
+    final response = await this.httpClient.get(
+          Uri.parse(url),
+        );
     if (response.statusCode != 200) {
       throw Exception('Error getting json placeholder');
     }
